@@ -3,285 +3,489 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz de Tradução em Francês</title>
+    <title>Teste de Tradução em Francês</title>
+    <link href="https://fonts.googleapis.com/css2?family=Franklin+Gothic+Demi&family=Rockwell&family=Poppins&family=Cooper+Black&display=swap" rel="stylesheet">
     <style>
-        body, html {
+        * {
             margin: 0;
             padding: 0;
-            height: 100%;
+            box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
-            overflow: hidden;
         }
-        #intro-page {
+
+        body {
+            overflow-x: hidden;
+            background-color: #F1E1AC;
+        }
+
+        /* Page 1 - Intro */
+        #page1 {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100vh;
-            background: url('fundo.jpg') no-repeat center center/cover;
+            background: url('fundo.jpg') no-repeat center center;
+            background-size: cover;
             display: flex;
             justify-content: center;
             align-items: center;
+            z-index: 1000;
         }
-        #intro-video {
-            width: 50%;
-            max-width: 600px;
+
+        #introVideo {
+            width: 70%;
+            max-width: 800px;
+            max-height: 70vh;
+            opacity: 1;
+            transition: opacity 1s ease-out;
         }
-        #quiz-start-page {
-            height: 100vh;
-            background: #F1E1AC;
-            display: flex;
+
+        /* Page 2 - Start Screen */
+        #page2 {
+            display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            min-height: 100vh;
+            background-color: #F1E1AC;
+            padding: 20px;
+            text-align: center;
+            animation: fadeIn 0.5s ease-in;
         }
-        #quiz-start-page img {
-            width: 30%;
-            max-width: 300px;
-            margin-bottom: 20px;
+
+        #mascotNeutro {
+            width: 200px;
+            margin-bottom: 40px;
+            max-width: 80%;
         }
-        #start-button {
-            background: #002F6C;
+
+        .start-button {
+            background-color: #002F6C;
             color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 30px;
             font-family: 'Franklin Gothic Demi', sans-serif;
             font-size: 1.5rem;
-            padding: 15px 30px;
-            border-radius: 25px;
-            border: none;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: transform 0.2s;
         }
-        #start-button:hover {
-            background: #3B8C59;
+
+        .start-button:hover {
+            transform: scale(1.05);
         }
-        #quiz-page {
-            height: 100vh;
-            background: #F4F1EC;
-            display: flex;
+
+        /* Page 3 - Quiz */
+        #page3 {
+            display: none;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            position: relative;
-        }
-        #quiz-container {
-            background: #002F6C;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 800px;
+            min-height: 100vh;
+            background-color: #F1E1AC;
             padding: 20px;
             position: relative;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.5s ease-in;
         }
-        #mascot {
+
+        .logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
             width: 100px;
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
+            max-width: 25%;
+            z-index: 10;
         }
-        #logo {
-            width: 150px;
-            position: absolute;
-            top: 10px;
-            left: 10px;
+
+        .progress-container {
+            width: 80%;
+            background-color: #F4F1EC;
+            border-radius: 10px;
+            margin: 60px 0 20px 0;
+            height: 6px;
+            overflow: hidden;
         }
-        #question-header {
-            background: #C8102E;
-            border-radius: 25px;
-            padding: 10px;
+
+        .progress-bar {
+            height: 100%;
+            background-color: #10C894;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .quiz-container {
+            background-color: #002F6C;
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 800px;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .question-header {
+            background-color: #C8102E;
+            border-radius: 50px;
+            padding: 15px;
+            margin-top: -40px;
+            margin-bottom: 20px;
             text-align: center;
+        }
+
+        .question-header h2 {
             color: white;
             font-family: 'Rockwell', serif;
+            font-size: 1.2rem;
+        }
+
+        .question-text {
+            color: white;
+            font-family: 'Rockwell', serif;
+            font-size: 1.68rem; /* 40% maior que 1.2rem */
+            font-weight: bold;
+            text-align: center;
             margin-bottom: 20px;
         }
-        #question-text {
-            font-size: 1.8rem;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        #answer-box {
-            background: #F4F1EC;
-            border-radius: 25px;
-            padding: 10px;
+
+        .translation-field {
+            background-color: #F4F1EC;
+            border-radius: 50px;
+            padding: 15px;
             min-height: 50px;
-            margin: 20px 0;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .answer-word {
-            background: #C6B9DD;
-            padding: 5px 10px;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .answer-word:hover {
-            background: #10C894;
-        }
-        #options-container {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
             justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
         }
-        .option {
-            background: #F5C84C;
-            padding: 10px 20px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-family: 'Poppins', sans-serif;
-            transition: background 0.3s;
-        }
-        .option:hover {
-            background: #10C894;
-        }
-        #verify-button {
-            background: #3B8C59;
+
+        .translation-field .word {
+            background-color: #007BA7;
             color: white;
-            font-family: 'Poppins', sans-serif;
-            padding: 10px 20px;
-            border-radius: 15px;
-            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
             cursor: pointer;
-            display: block;
-            margin: 20px auto;
-            transition: background 0.3s;
+            font-size: 1.1rem;
+            transition: background-color 0.3s;
         }
-        #verify-button:hover {
-            background: #2E6C00;
+
+        .translation-field .word.correct {
+            background-color: #3B8C59;
         }
-        #feedback {
-            font-family: 'Cooper Black', serif;
-            text-align: center;
-            font-size: 1.5rem;
-            margin: 10px 0;
+
+        .translation-field .word.incorrect {
+            background-color: #C8102E;
         }
-        #correct-answer {
-            text-align: center;
+
+        .options-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .option {
+            background-color: #F5C84C;
+            color: #002F6C;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
             font-family: 'Poppins', sans-serif;
-            color: #F4F1EC;
+            font-size: 1.1rem;
+            transition: transform 0.2s, background-color 0.3s;
         }
-        #navigation {
+
+        .option:hover {
+            transform: scale(1.05);
+        }
+
+        .option.selected {
+            background-color: #C6B9DD;
+            transform: none;
+        }
+
+        .check-button-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .check-button {
+            background-color: #3B8C59;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 25px;
+            font-family: 'Franklin Gothic Demi', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .check-button:hover {
+            transform: scale(1.05);
+        }
+
+        .feedback-container {
+            background-color: #F4F1EC;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+        }
+
+        .correct-answer {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.2rem;
+            color: #002F6C;
+            text-align: center;
+        }
+
+        .feedback {
+            text-align: center;
+            font-family: 'Cooper Black', sans-serif;
+            font-size: 1.8rem;
+            margin: 20px 0;
+            height: 40px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .feedback.show {
+            opacity: 1;
+        }
+
+        .correct {
+            color: #3B8C59;
+            text-shadow: 0 0 5px rgba(59, 140, 89, 0.3);
+        }
+
+        .incorrect {
+            color: #C8102E;
+            text-shadow: 0 0 5px rgba(200, 16, 46, 0.3);
+        }
+
+        .mascotNinho {
+            position: absolute;
+            bottom: -20px;
+            left: -20px;
+            width: 100px;
+            max-width: 25%;
+        }
+
+        .navigation-buttons {
             display: flex;
             justify-content: center;
             gap: 20px;
-        }
-        #back-button, #next-button {
-            padding: 10px 20px;
-            border-radius: 15px;
-            border: none;
-            cursor: pointer;
-            font-family: 'Poppins', sans-serif;
-            transition: background 0.3s;
-        }
-        #back-button {
-            background: #F5C84C;
-        }
-        #back-button:hover {
-            background: #C6B9DD;
-        }
-        #next-button {
-            background: #3B8C59;
-            color: white;
-        }
-        #next-button:hover {
-            background: #2E6C00;
-        }
-        #progress-bar {
-            width: 100%;
-            height: 10px;
-            background: #C6B9DD;
-            border-radius: 5px;
             margin-top: 20px;
+            flex-wrap: wrap;
         }
-        #progress {
-            height: 100%;
-            background: #10C894;
-            border-radius: 5px;
-            transition: width 0.5s ease;
-        }
-        #result-page {
-            height: 100vh;
-            background: #F4F1EC;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-        #result-container {
-            background: #002F6C;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 800px;
-            padding: 20px;
+
+        .nav-button {
+            background-color: #002F6C;
             color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 25px;
+            font-family: 'Franklin Gothic Demi', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
         }
-        #result-message {
-            background: #C8102E;
-            border-radius: 15px;
-            padding: 10px;
+
+        .nav-button:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-button:disabled {
+            background-color: #C6B9DD;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Results Page */
+        #resultsPage {
+            background-color: #002F6C;
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            color: white;
+            margin: 30px auto;
+            display: none;
+        }
+
+        .results-title {
+            background-color: #C8102E;
+            border-radius: 50px;
+            padding: 15px;
             font-family: 'Franklin Gothic Demi', sans-serif;
             font-size: 2rem;
+            margin-bottom: 20px;
         }
-        #result-text {
+
+        .results-message {
             font-family: 'Poppins', sans-serif;
-            margin: 20px 0;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
         }
-        #result-image {
-            width: 50%;
-            max-width: 300px;
+
+        .results-mascot {
+            width: 200px;
+            margin: 20px auto;
+            max-width: 80%;
         }
-        @media (max-width: 600px) {
-            #quiz-container {
-                width: 95%;
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .slide-in {
+            animation: slideIn 0.5s ease-in;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            #introVideo {
+                width: 90%;
+                max-height: 50vh;
             }
-            #intro-video {
-                width: 80%;
+
+            .quiz-container {
+                padding: 20px;
             }
-            #question-text {
+
+            .question-header h2 {
+                font-size: 1rem;
+            }
+
+            .question-text {
                 font-size: 1.4rem;
+            }
+
+            .option, .translation-field .word {
+                font-size: 1rem;
+                padding: 6px 12px;
+            }
+
+            .feedback {
+                font-size: 1.5rem;
+            }
+
+            .results-title {
+                font-size: 1.5rem;
+            }
+
+            .results-message {
+                font-size: 1rem;
+            }
+
+            .results-mascot {
+                width: 150px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .start-button {
+                font-size: 1.2rem;
+                padding: 12px 24px;
+            }
+
+            .question-header {
+                padding: 10px;
+                margin-top: -30px;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .nav-button {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <div id="intro-page">
-        <video id="intro-video" autoplay>
+    <!-- Page 1 - Intro Video -->
+    <div id="page1">
+        <video id="introVideo" autoplay muted>
             <source src="VIDEOINTRO.mp4" type="video/mp4">
+            Your browser does not support the video tag.
         </video>
+        <audio id="introAudio" src="SOMINTRO.mp3"></audio>
     </div>
-    <div id="quiz-start-page" style="display: none;">
-        <img src="MASCOTENEUTRO.png" alt="Mascote Neutro">
-        <button id="start-button">INICIAR EXERCÍCIO</button>
+
+    <!-- Page 2 - Start Screen -->
+    <div id="page2">
+        <img id="mascotNeutro" src="MASCOTENEUTRO.png" alt="Mascote">
+        <button class="start-button" id="startButton">INICIAR EXERCÍCIO</button>
     </div>
-    <div id="quiz-page" style="display: none;">
-        <img id="logo" src="LOGODAMIAO.png" alt="Logo">
-        <div id="quiz-container">
-            <img id="mascot" src="MASCOTENINHO.png" alt="Mascote">
-            <div id="question-header">
-                Escolha as palavras que melhor traduzem a seguinte frase:
-                <div id="question-text"></div>
-            </div>
-            <div id="answer-box"></div>
-            <div id="options-container"></div>
-            <button id="verify-button">Verificar</button>
-            <div id="feedback"></div>
-            <div id="correct-answer"></div>
-            <div id="navigation">
-                <button id="back-button">VOLTAR</button>
-                <button id="next-button">AVANÇAR</button>
-            </div>
-            <div id="progress-bar">
-                <div id="progress"></div>
-            </div>
+
+    <!-- Page 3 - Quiz -->
+    <div id="page3">
+        <img class="logo" src="LOGODAMIAO.png" alt="Logo">
+
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
         </div>
-    </div>
-    <div id="result-page" style="display: none;">
-        <div id="result-container">
-            <div id="result-message"></div>
-            <div id="result-text"></div>
-            <img id="result-image" src="" alt="Mascote Resultado">
+
+        <div class="quiz-container">
+            <div class="question-header">
+                <h2>Escolha as palavras que melhor traduzem a seguinte frase:</h2>
+            </div>
+            <div class="question-text" id="questionText"></div>
+            <div class="translation-field" id="translationField"></div>
+            <div class="options-container" id="optionsContainer"></div>
+            <div class="check-button-container">
+                <button class="check-button" id="checkButton">VERIFICAR</button>
+            </div>
+            <div class="feedback-container" id="feedbackContainer">
+                <div class="correct-answer" id="correctAnswer"></div>
+            </div>
+            <div class="feedback" id="feedback"></div>
+            <img class="mascotNinho" src="MASCOTENINHO.png" alt="Mascote">
+        </div>
+
+        <div class="navigation-buttons">
+            <button class="nav-button" id="backButton">VOLTAR</button>
+            <button class="nav-button" id="nextButton">AVANÇAR</button>
         </div>
     </div>
 
+    <!-- Results Page -->
+    <div id="resultsPage" class="results-container">
+        <h1 class="results-title" id="resultsTitle"></h1>
+        <p class="results-message" id="resultsMessage"></p>
+        <img class="results-mascot" id="resultsMascot" src="" alt="Mascote">
+    </div>
+
+    <!-- Audio elements -->
+    <audio id="buttonSound" src="BUTTON.mp3"></audio>
+    <audio id="winSound" src="WIN.wav"></audio>
+    <audio id="errorSound" src="ERROR.wav"></audio>
+    <audio id="positiveSound" src="POSITIVO.mp3"></audio>
+    <audio id="negativeSound" src="NEGATIVO.mp3"></audio>
+
     <script>
-        const questions = [
+        // Quiz data
+        const quizData = [
             { fr: "L’ami est jeune.", pt: "O amigo é jovem.", options: ["O amigo", "é", "jovem", "rápido", "azul"] },
             { fr: "La table est petite.", pt: "A mesa é pequena.", options: ["A mesa", "é", "pequena", "grande", "azul"] },
             { fr: "Le cahier est bleu.", pt: "O caderno é azul.", options: ["O caderno", "é", "azul", "jovem", "rápido"] },
@@ -327,185 +531,324 @@
             { fr: "Le jardin de la fille est simple.", pt: "O jardim da menina é simples.", options: ["O jardim", "da menina", "é simples", "de fita", "rápido"] }
         ];
 
+        // DOM elements
+        const page1 = document.getElementById('page1');
+        const page2 = document.getElementById('page2');
+        const page3 = document.getElementById('page3');
+        const introVideo = document.getElementById('introVideo');
+        const introAudio = document.getElementById('introAudio');
+        const startButton = document.getElementById('startButton');
+        const questionText = document.getElementById('questionText');
+        const translationField = document.getElementById('translationField');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const checkButton = document.getElementById('checkButton');
+        const feedbackContainer = document.getElementById('feedbackContainer');
+        const correctAnswer = document.getElementById('correctAnswer');
+        const feedback = document.getElementById('feedback');
+        const backButton = document.getElementById('backButton');
+        const nextButton = document.getElementById('nextButton');
+        const resultsPage = document.getElementById('resultsPage');
+        const resultsTitle = document.getElementById('resultsTitle');
+        const resultsMessage = document.getElementById('resultsMessage');
+        const resultsMascot = document.getElementById('resultsMascot');
+        const progressBar = document.getElementById('progressBar');
+        const buttonSound = document.getElementById('buttonSound');
+        const winSound = document.getElementById('winSound');
+        const errorSound = document.getElementById('errorSound');
+        const positiveSound = document.getElementById('positiveSound');
+        const negativeSound = document.getElementById('negativeSound');
+
+        // Quiz state
         let currentQuestion = 0;
         let score = 0;
-        let selectedWords = [];
-        let progress = JSON.parse(localStorage.getItem('quizProgress')) || { currentQuestion: 0, score: 0 };
+        let userAnswers = Array(quizData.length).fill([]);
+        let answered = false;
 
-        const introPage = document.getElementById('intro-page');
-        const quizStartPage = document.getElementById('quiz-start-page');
-        const quizPage = document.getElementById('quiz-page');
-        const resultPage = document.getElementById('result-page');
-        const questionText = document.getElementById('question-text');
-        const answerBox = document.getElementById('answer-box');
-        const optionsContainer = document.getElementById('options-container');
-        const verifyButton = document.getElementById('verify-button');
-        const feedback = document.getElementById('feedback');
-        const correctAnswer = document.getElementById('correct-answer');
-        const backButton = document.getElementById('back-button');
-        const nextButton = document.getElementById('next-button');
-        const progressBar = document.getElementById('progress');
-        const introVideo = document.getElementById('intro-video');
-        const startButton = document.getElementById('start-button');
-        const resultMessage = document.getElementById('result-message');
-        const resultText = document.getElementById('result-text');
-        const resultImage = document.getElementById('result-image');
+        // Initialize the quiz
+        function initQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            userAnswers = Array(quizData.length).fill([]);
+            answered = false;
+            loadQuestion(currentQuestion);
+            updateProgressBar();
+        }
 
-        const introAudio = new Audio('SOMINTRO.mp3');
-        introAudio.play();
+        // Load a question
+        function loadQuestion(index) {
+            if (index < 0 || index >= quizData.length) return;
 
-        introVideo.onended = () => {
-            introAudio.pause();
-            introPage.style.display = 'none';
-            quizStartPage.style.display = 'flex';
-        };
+            currentQuestion = index;
+            const question = quizData[index];
 
-        startButton.addEventListener('click', () => {
-            quizStartPage.style.display = 'none';
-            quizPage.style.display = 'flex';
-            loadQuestion();
-        });
-
-        function loadQuestion() {
-            const q = questions[currentQuestion];
-            questionText.textContent = q.fr;
-            answerBox.innerHTML = '';
+            // Reset state
+            answered = false;
+            translationField.innerHTML = '';
             optionsContainer.innerHTML = '';
             feedback.textContent = '';
-            correctAnswer.textContent = '';
-            selectedWords = [];
+            feedback.className = 'feedback';
+            feedbackContainer.style.display = 'none';
 
-            q.options.forEach(option => {
-                const optionElement = document.createElement('div');
-                optionElement.className = 'option';
-                optionElement.textContent = option;
-                optionElement.addEventListener('click', () => selectWord(option, optionElement));
-                optionElement.addEventListener('touchstart', () => selectWord(option, optionElement));
-                optionsContainer.appendChild(optionElement);
+            // Set question text
+            questionText.textContent = question.fr;
+            questionText.classList.add('slide-in');
+
+            // Populate previous answer if exists
+            if (userAnswers[index].length > 0) {
+                userAnswers[index].forEach(word => {
+                    const wordElement = document.createElement('span');
+                    wordElement.className = 'word';
+                    wordElement.textContent = word;
+                    wordElement.addEventListener('click', () => removeWord(word));
+                    translationField.appendChild(wordElement);
+                });
+            }
+
+            // Populate options
+            const shuffledOptions = shuffleArray([...question.options]);
+            shuffledOptions.forEach(option => {
+                if (!userAnswers[index].includes(option)) {
+                    const optionElement = document.createElement('span');
+                    optionElement.className = 'option';
+                    optionElement.textContent = option;
+                    optionElement.addEventListener('click', () => addWord(option));
+                    optionElement.addEventListener('touchstart', () => addWord(option));
+                    optionsContainer.appendChild(optionElement);
+                }
             });
 
-            updateProgress();
+            // Update navigation buttons
+            backButton.disabled = index === 0;
+            nextButton.disabled = false;
+            nextButton.textContent = index === quizData.length - 1 ? 'VER RESULTADO' : 'AVANÇAR';
+
+            // Update progress bar
+            updateProgressBar();
         }
 
-        function selectWord(word, element) {
-            selectedWords.push(word);
-            const wordElement = document.createElement('div');
-            wordElement.className = 'answer-word';
-            wordElement.textContent = word;
-            wordElement.addEventListener('click', () => removeWord(word, wordElement));
-            wordElement.addEventListener('touchstart', () => removeWord(word, wordElement));
-            answerBox.appendChild(wordElement);
-            element.style.display = 'none';
+        // Shuffle array for options
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
         }
 
-        function removeWord(word, element) {
-            selectedWords = selectedWords.filter(w => w !== word);
-            answerBox.removeChild(element);
-            const optionElement = Array.from(optionsContainer.children).find(opt => opt.textContent === word);
-            if (optionElement) optionElement.style.display = 'block';
+        // Add word to translation field
+        function addWord(word) {
+            if (answered) return;
+
+            userAnswers[currentQuestion].push(word);
+            translationField.innerHTML = '';
+            userAnswers[currentQuestion].forEach(w => {
+                const wordElement = document.createElement('span');
+                wordElement.className = 'word';
+                wordElement.textContent = w;
+                wordElement.addEventListener('click', () => removeWord(w));
+                wordElement.addEventListener('touchstart', () => removeWord(w));
+                translationField.appendChild(wordElement);
+            });
+
+            optionsContainer.innerHTML = '';
+            const shuffledOptions = shuffleArray([...quizData[currentQuestion].options]);
+            shuffledOptions.forEach(option => {
+                if (!userAnswers[currentQuestion].includes(option)) {
+                    const optionElement = document.createElement('span');
+                    optionElement.className = 'option';
+                    optionElement.textContent = option;
+                    optionElement.addEventListener('click', () => addWord(option));
+                    optionElement.addEventListener('touchstart', () => addWord(option));
+                    optionsContainer.appendChild(optionElement);
+                }
+            });
         }
 
-        verifyButton.addEventListener('click', () => {
-            const buttonAudio = new Audio('BUTTON.mp3');
-            buttonAudio.play();
-            const q = questions[currentQuestion];
-            const userAnswer = selectedWords.join(' ');
-            const isCorrect = userAnswer === q.pt;
+        // Remove word from translation field
+        function removeWord(word) {
+            if (answered) return;
 
-            answerBox.style.background = isCorrect ? '#3B8C59' : '#C8102E';
+            userAnswers[currentQuestion] = userAnswers[currentQuestion].filter(w => w !== word);
+            translationField.innerHTML = '';
+            userAnswers[currentQuestion].forEach(w => {
+                const wordElement = document.createElement('span');
+                wordElement.className = 'word';
+                wordElement.textContent = w;
+                wordElement.addEventListener('click', () => removeWord(w));
+                wordElement.addEventListener('touchstart', () => removeWord(w));
+                translationField.appendChild(wordElement);
+            });
+
+            optionsContainer.innerHTML = '';
+            const shuffledOptions = shuffleArray([...quizData[currentQuestion].options]);
+            shuffledOptions.forEach(option => {
+                if (!userAnswers[currentQuestion].includes(option)) {
+                    const optionElement = document.createElement('span');
+                    optionElement.className = 'option';
+                    optionElement.textContent = option;
+                    optionElement.addEventListener('click', () => addWord(option));
+                    optionElement.addEventListener('touchstart', () => addWord(option));
+                    optionsContainer.appendChild(optionElement);
+                }
+            });
+        }
+
+        // Check answer
+        function checkAnswer() {
+            if (answered) return;
+
+            buttonSound.play();
+            answered = true;
+            const userAnswer = userAnswers[currentQuestion].join(' ').toLowerCase();
+            const correctAnswer = quizData[currentQuestion].pt.toLowerCase();
+            const isCorrect = userAnswer === correctAnswer;
+
+            // Show feedback
+            feedbackContainer.style.display = 'block';
+            correctAnswer.textContent = `Resposta correta: ${quizData[currentQuestion].pt}`;
+            translationField.childNodes.forEach((node, index) => {
+                const correctWords = quizData[currentQuestion].pt.split(' ');
+                node.classList.add(correctWords[index] && node.textContent.toLowerCase() === correctWords[index].toLowerCase() ? 'correct' : 'incorrect');
+            });
+
             feedback.textContent = isCorrect ? 'CORRETO' : 'INCORRETO';
-            correctAnswer.textContent = isCorrect ? '' : `Resposta correta: ${q.pt}`;
-            const feedbackAudio = new Audio(isCorrect ? 'WIN.wav' : 'ERROR.wav');
-            feedbackAudio.play();
+            feedback.className = `feedback ${isCorrect ? 'correct' : 'incorrect'} show`;
+            if (isCorrect) {
+                score++;
+                winSound.play();
+            } else {
+                errorSound.play();
+            }
 
-            if (isCorrect) score++;
-            localStorage.setItem('quizProgress', JSON.stringify({ currentQuestion, score }));
-        });
+            updateProgressBar();
+        }
 
-        backButton.addEventListener('click', () => {
-            const buttonAudio = new Audio('BUTTON.mp3');
-            buttonAudio.play();
+        // Update progress bar
+        function updateProgressBar() {
+            const progress = ((currentQuestion + 1) / quizData.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        // Navigation functions
+        function goToNextQuestion() {
+            buttonSound.play();
+
+            if (!answered && userAnswers[currentQuestion].length > 0) {
+                checkAnswer();
+                return;
+            }
+
+            if (currentQuestion === quizData.length - 1) {
+                showResults();
+                return;
+            }
+
+            if (currentQuestion < quizData.length - 1) {
+                currentQuestion++;
+                loadQuestion(currentQuestion);
+            }
+        }
+
+        function goToPreviousQuestion() {
+            buttonSound.play();
             if (currentQuestion > 0) {
                 currentQuestion--;
-                loadQuestion();
+                loadQuestion(currentQuestion);
             }
-        });
-
-        nextButton.addEventListener('click', () => {
-            const buttonAudio = new Audio('BUTTON.mp3');
-            buttonAudio.play();
-            if (currentQuestion < questions.length - 1) {
-                currentQuestion++;
-                loadQuestion();
-            } else {
-                showResults();
-            }
-        });
-
-        function updateProgress() {
-            const percentage = ((currentQuestion + 1) / questions.length) * 100;
-            progressBar.style.width = `${percentage}%`;
         }
 
+        // Show results
         function showResults() {
-            quizPage.style.display = 'none';
-            resultPage.style.display = 'flex';
-            const percentage = (score / questions.length) * 100;
+            const percentage = Math.round((score / quizData.length) * 100);
 
-            let message, text, image, audio;
             if (percentage >= 95) {
-                message = 'EXCELENTE';
-                text = `Parabéns pelo seu desempenho excepcional! Você alcançou um resultado EXCELENTE, acertando ${score} das palavras no quiz de escrita em francês! Isso demonstra um domínio impressionante das expressões e da ortografia francesa. Continue assim, pois seu esforço e dedicação são inspiradores! Este resultado reflete não apenas sua habilidade linguística, mas também sua atenção aos detalhes e compromisso em aprender. Que tal continuar explorando o idioma com o mesmo entusiasmo? A prática constante vai te levar ainda mais longe.`;
-                image = 'MASCOTEFELIZ.png';
-                audio = 'POSITIVO.mp3';
+                resultsTitle.textContent = 'EXCELENTE';
+                resultsMessage.textContent = `Parabéns pelo seu desempenho excepcional! Você alcançou um resultado EXCELENTE, acertando ${score} das ${quizData.length} palavras no quiz de escrita em francês! Isso demonstra um domínio impressionante das expressões e da ortografia francesa. Continue assim, pois seu esforço e dedicação são inspiradores! Este resultado reflete não apenas sua habilidade linguística, mas também sua atenção aos detalhes e compromisso em aprender. Que tal continuar explorando o idioma com o mesmo entusiasmo? A prática constante vai te levar ainda mais longe.`;
+                resultsMascot.src = 'MASCOTEFELIZ.png';
+                positiveSound.play();
             } else if (percentage >= 75) {
-                message = 'PARABÉNS';
-                text = `Parabéns pelo seu desempenho! Você obteve um BOM resultado, acertando ${score} das palavras no quiz de escrita em francês! Isso mostra que você está no caminho certo, com uma sólida compreensão do idioma. Sua dedicação está valendo a pena, e cada palavra certa é um passo rumo à fluência. Continue assim, brilhando no aprendizado do francês!`;
-                image = 'MASCOTEALEGRE.png';
-                audio = 'POSITIVO.mp3';
+                resultsTitle.textContent = 'PARABÉNS';
+                resultsMessage.textContent = `Parabéns pelo seu desempenho! Você obteve um BOM resultado, acertando ${score} das ${quizData.length} palavras no quiz de escrita em francês! Isso mostra que você está no caminho certo, com uma sólida compreensão do idioma. Sua dedicação está valendo a pena, e cada palavra certa é um passo rumo à fluência. Continue assim, brilhando no aprendizado do francês!`;
+                resultsMascot.src = 'MASCOTEALEGRE.png';
+                positiveSound.play();
             } else if (percentage >= 60) {
-                message = 'QUASE LÁ';
-                text = `Você alcançou o nível SUFICIENTE, acertando ${score} das palavras no quiz de escrita em francês! Isso indica um progresso notável, com uma boa base no idioma. Sua dedicação está clara, e você está muito próximo de resultados ainda melhores. Cada palavra escrita é um avanço no aprendizado do francês. Continue se empenhando, e logo verá seu desempenho crescer! Siga firme na jornada para dominar o idioma!`;
-                image = 'MASCOTEDUVIDA.png';
-                audio = 'NEGATIVO.mp3';
+                resultsTitle.textContent = 'QUASE LÁ';
+                resultsMessage.textContent = `Você alcançou o nível SUFICIENTE, acertando ${score} das ${quizData.length} palavras no quiz de escrita em francês! Isso indica um progresso notável, com uma boa base no idioma. Sua dedicação está clara, e você está muito próximo de resultados ainda melhores. Cada palavra escrita é um avanço no aprendizado do francês. Continue se empenhando, e logo verá seu desempenho crescer! Siga firme na jornada para dominar o idioma!`;
+                resultsMascot.src = 'MASCOTEDUVIDA.png';
+                negativeSound.play();
             } else {
-                message = 'NÃO FOI DESSA VEZ';
-                text = `Você obteve o nível INSUFICIENTE, acertando ${score} das palavras no quiz de escrita em francês. Não desanime! Cada tentativa é uma oportunidade de aprendizado, e você já deu o primeiro passo ao participar. O francês pode ser desafiador, mas com prática, você vai melhorar. Reforce as palavras e continue se dedicando. Sua persistência vai te levar mais longe na jornada do idioma!`;
-                image = 'MASCOTEDUVIDA.png';
-                audio = 'NEGATIVO.mp3';
+                resultsTitle.textContent = 'NÃO FOI DESSA VEZ';
+                resultsMessage.textContent = `Você obteve o nível INSUFICIENTE, acertando ${score} das ${quizData.length} palavras no quiz de escrita em francês. Não desanime! Cada tentativa é uma oportunidade de aprendizado, e você já deu o primeiro passo ao participar. O francês pode ser desafiador, mas com prática, você vai melhorar. Reforce as palavras e continue se dedicando. Sua persistência vai te levar mais longe na jornada do idioma!`;
+                resultsMascot.src = 'MASCOTEDUVIDA.png';
+                negativeSound.play();
             }
 
-            resultMessage.textContent = message;
-            resultText.textContent = text;
-            resultImage.src = image;
-            const resultAudio = new Audio(audio);
-            resultAudio.play();
-
-            localStorage.removeItem('quizProgress');
+            page3.style.display = 'none';
+            resultsPage.style.display = 'block';
         }
 
-        // Touch gestures for mobile
+        // Event listeners
+        introVideo.addEventListener('ended', () => {
+            introVideo.style.opacity = '0';
+            setTimeout(() => {
+                page1.style.display = 'none';
+                page2.style.display = 'flex';
+                introAudio.pause();
+            }, 1000);
+        });
+
+        startButton.addEventListener('click', () => {
+            buttonSound.play();
+            page2.style.display = 'none';
+            page3.style.display = 'flex';
+            initQuiz();
+        });
+
+        backButton.addEventListener('click', goToPreviousQuestion);
+        nextButton.addEventListener('click', goToNextQuestion);
+        checkButton.addEventListener('click', checkAnswer);
+
+        // Swipe gestures for navigation
         let touchStartX = 0;
-        quizPage.addEventListener('touchstart', e => {
+        let touchEndX = 0;
+
+        page3.addEventListener('touchstart', (e) => {
             touchStartX = e.changedTouches[0].screenX;
         });
-        quizPage.addEventListener('touchend', e => {
-            const touchEndX = e.changedTouches[0].screenX;
-            if (touchEndX < touchStartX - 50 && currentQuestion < questions.length - 1) {
-                nextButton.click();
-            } else if (touchEndX > touchStartX + 50 && currentQuestion > 0) {
-                backButton.click();
+
+        page3.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            if (touchEndX < touchStartX - 50) {
+                goToNextQuestion();
+            } else if (touchEndX > touchStartX + 50) {
+                goToPreviousQuestion();
             }
         });
 
-        // Load saved progress
-        if (progress.currentQuestion > 0) {
-            currentQuestion = progress.currentQuestion;
-            score = progress.score;
-            quizStartPage.style.display = 'none';
-            quizPage.style.display = 'flex';
-            loadQuestion();
-        }
+        // Load progress from localStorage
+        document.addEventListener('DOMContentLoaded', () => {
+            introVideo.play();
+            introAudio.play();
+
+            const savedProgress = localStorage.getItem('frenchTranslationQuizProgress');
+            if (savedProgress) {
+                const progress = JSON.parse(savedProgress);
+                currentQuestion = progress.currentQuestion || 0;
+                score = progress.score || 0;
+                userAnswers = progress.userAnswers || Array(quizData.length).fill([]);
+            }
+            loadQuestion(currentQuestion);
+        });
+
+        // Save progress to localStorage
+        window.addEventListener('beforeunload', () => {
+            const progress = {
+                currentQuestion,
+                score,
+                userAnswers
+            };
+            localStorage.setItem('frenchTranslationQuizProgress', JSON.stringify(progress));
+        });
     </script>
 </body>
 </html>
