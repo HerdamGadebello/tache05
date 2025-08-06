@@ -623,6 +623,7 @@
         function addWord(word) {
             if (answered) return;
 
+            buttonSound.play();
             userAnswers[currentQuestion] = userAnswers[currentQuestion] || [];
             userAnswers[currentQuestion].push(word);
             translationField.innerHTML = '';
@@ -653,6 +654,7 @@
         function removeWord(word) {
             if (answered) return;
 
+            buttonSound.play();
             userAnswers[currentQuestion] = userAnswers[currentQuestion].filter(w => w !== word);
             translationField.innerHTML = '';
             userAnswers[currentQuestion].forEach(w => {
