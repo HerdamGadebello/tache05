@@ -687,17 +687,26 @@
 
             const userAnswerWords = userAnswers[currentQuestion] || [];
             const correctAnswer = quizData[currentQuestion].pt;
-            const correctOptions = quizData[currentQuestion].options.filter(option =>
-                correctAnswer.includes(option) || correctAnswer.split('/').some(alt => alt.includes(option))
+
+            // divide a resposta correta com base nas opções fornecidas
+            const correctWords = quizData[currentQuestion].options.filter(option =>
+                correctAnswer.includes(option)
             );
 
-            let isCorrect = userAnswerWords.length === correctOptions.length;
-            if (isCorrect) {
+            let isCorrect = true;
+
+            if (userAnswerWords.length !== correctWords.length) {
+                isCorrect = false;
+            } else {
                 for (let i = 0; i < userAnswerWords.length; i++) {
                     const userWord = normalizeString(userAnswerWords[i]);
-                    const correctWord = normalizeString(correctOptions[i]);
-                    const correctAlternatives = correctOptions[i].split('/');
-                    if (!correctAlternatives.some(alt => normalizeString(alt) === userWord)) {
+                    const correctAlternatives = correctWords[i].split('/');
+
+                    const match = correctAlternatives.some(alt =>
+                        normalizeString(alt) === userWord
+                    );
+
+                    if (!match) {
                         isCorrect = false;
                         break;
                     }
@@ -707,7 +716,6 @@
             feedbackContainer.style.display = 'block';
             correctAnswer.textContent = `Resposta correta: ${quizData[currentQuestion].pt}`;
             translationField.childNodes.forEach((node, index) => {
-                const correctWords = correctOptions;
                 const correctAlternatives = correctWords[index] ? correctWords[index].split('/') : [];
                 const isWordCorrect = correctAlternatives.some(alt => normalizeString(node.textContent) === normalizeString(alt));
                 node.classList.add(isWordCorrect ? 'correct' : 'incorrect');
