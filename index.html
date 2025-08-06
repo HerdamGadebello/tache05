@@ -478,7 +478,7 @@
             { fr: "Il dessine un livre.", pt: "Ele desenha um livro.", options: ["Ele", "desenha", "um livro", "está livre", "jovem"] },
             { fr: "L’école est petite.", pt: "A escola é pequena.", options: ["A escola", "é", "pequena", "grande", "azul"] },
             { fr: "L’étudiant parle vite.", pt: "O estudante fala rápido.", options: ["O estudante", "fala", "rápido", "lento", "parece"] },
-            { fr: "Je mange le senior.", pt: "Eu como o pão.", options: ["Eu", "como", "o pão", "livro", "casa"] },
+            { fr: "Je mange le pain.", pt: "Eu como o pão.", options: ["Eu", "como", "o pão", "livro", "casa"] },
             { fr: "La fille prépare le lait.", pt: "A menina prepara o leite.", options: ["A menina", "prepara", "o leite", "pão", "rápido"] },
             { fr: "C’est le même jour.", pt: "É o mesmo dia.", options: ["É", "o mesmo", "dia", "noite", "livro"] },
             { fr: "La maison est pleine.", pt: "A casa está cheia.", options: ["A casa", "está", "cheia", "vazia", "na praia"] },
@@ -699,8 +699,7 @@
                 for (let i = 0; i < userAnswerWords.length; i++) {
                     const userWord = normalizeString(userAnswerWords[i]);
                     const correctAlternatives = correctWords[i].split('/').map(w => normalizeString(w));
-
-                    const match = correctAlternatives.includes(userWord);
+                    const match = normalizeString(correctWords[i]) === userWord || correctAlternatives.includes(userWord);
 
                     if (!match) {
                         isCorrect = false;
@@ -715,8 +714,7 @@
             translationField.childNodes.forEach((node, index) => {
                 const correctAlternatives = correctWords[index] ? correctWords[index].split('/').map(w => normalizeString(w)) : [];
                 const wordClicked = normalizeString(node.textContent);
-
-                const isWordCorrect = correctAlternatives.includes(wordClicked);
+                const isWordCorrect = normalizeString(correctWords[index]) === wordClicked || correctAlternatives.includes(wordClicked);
 
                 node.classList.add(isWordCorrect ? 'correct' : 'incorrect');
             });
