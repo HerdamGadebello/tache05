@@ -18,7 +18,6 @@
             background-color: #F1E1AC;
         }
 
-        /* Page 1 - Intro */
         #page1 {
             position: fixed;
             top: 0;
@@ -41,7 +40,6 @@
             transition: opacity 1s ease-out;
         }
 
-        /* Page 2 - Start Screen */
         #page2 {
             display: none;
             flex-direction: column;
@@ -76,7 +74,6 @@
             transform: scale(1.05);
         }
 
-        /* Page 3 - Quiz */
         #page3 {
             display: none;
             flex-direction: column;
@@ -142,7 +139,7 @@
         .question-text {
             color: white;
             font-family: 'Rockwell', serif;
-            font-size: 1.68rem; /* 40% maior que 1.2rem */
+            font-size: 1.68rem;
             font-weight: bold;
             text-align: center;
             margin-bottom: 20px;
@@ -310,7 +307,6 @@
             transform: none;
         }
 
-        /* Results Page */
         #resultsPage {
             background-color: #002F6C;
             border-radius: 20px;
@@ -344,7 +340,6 @@
             max-width: 80%;
         }
 
-        /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -359,7 +354,6 @@
             animation: slideIn 0.5s ease-in;
         }
 
-        /* Responsive adjustments */
         @media (max-width: 768px) {
             #introVideo {
                 width: 90%;
@@ -423,7 +417,6 @@
     </style>
 </head>
 <body>
-    <!-- Page 1 - Intro Video -->
     <div id="page1">
         <video id="introVideo" autoplay muted>
             <source src="VIDEOINTRO.mp4" type="video/mp4">
@@ -432,20 +425,16 @@
         <audio id="introAudio" src="SOMINTRO.mp3"></audio>
     </div>
 
-    <!-- Page 2 - Start Screen -->
     <div id="page2">
         <img id="mascotNeutro" src="MASCOTENEUTRO.png" alt="Mascote">
         <button class="start-button" id="startButton">INICIAR EXERCÍCIO</button>
     </div>
 
-    <!-- Page 3 - Quiz -->
     <div id="page3">
         <img class="logo" src="LOGODAMIAO.png" alt="Logo">
-
         <div class="progress-container">
             <div class="progress-bar" id="progressBar"></div>
         </div>
-
         <div class="quiz-container">
             <div class="question-header">
                 <h2>Escolha as palavras que melhor traduzem a seguinte frase:</h2>
@@ -462,21 +451,18 @@
             <div class="feedback" id="feedback"></div>
             <img class="mascotNinho" src="MASCOTENINHO.png" alt="Mascote">
         </div>
-
         <div class="navigation-buttons">
             <button class="nav-button" id="backButton">VOLTAR</button>
             <button class="nav-button" id="nextButton">AVANÇAR</button>
         </div>
     </div>
 
-    <!-- Results Page -->
     <div id="resultsPage" class="results-container">
         <h1 class="results-title" id="resultsTitle"></h1>
         <p class="results-message" id="resultsMessage"></p>
         <img class="results-mascot" id="resultsMascot" src="" alt="Mascote">
     </div>
 
-    <!-- Audio elements -->
     <audio id="buttonSound" src="BUTTON.mp3"></audio>
     <audio id="winSound" src="WIN.wav"></audio>
     <audio id="errorSound" src="ERROR.wav"></audio>
@@ -484,7 +470,6 @@
     <audio id="negativeSound" src="NEGATIVO.mp3"></audio>
 
     <script>
-        // Quiz data
         const quizData = [
             { fr: "L’ami est jeune.", pt: "O amigo é jovem.", options: ["O amigo", "é", "jovem", "rápido", "azul"] },
             { fr: "La table est petite.", pt: "A mesa é pequena.", options: ["A mesa", "é", "pequena", "grande", "azul"] },
@@ -531,7 +516,6 @@
             { fr: "Le jardin de la fille est simple.", pt: "O jardim da menina é simples.", options: ["O jardim", "da menina", "é simples", "de fita", "rápido"] }
         ];
 
-        // DOM elements
         const page1 = document.getElementById('page1');
         const page2 = document.getElementById('page2');
         const page3 = document.getElementById('page3');
@@ -558,13 +542,18 @@
         const positiveSound = document.getElementById('positiveSound');
         const negativeSound = document.getElementById('negativeSound');
 
-        // Quiz state
         let currentQuestion = 0;
         let score = 0;
         let userAnswers = Array(quizData.length).fill([]);
         let answered = false;
 
-        // Initialize the quiz
+        function normalizeString(str) {
+            return str
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '');
+        }
+
         function initQuiz() {
             currentQuestion = 0;
             score = 0;
@@ -574,59 +563,6 @@
             updateProgressBar();
         }
 
-        // Load a question
-        function loadQuestion(index) {
-            if (index < 0 || index >= quizData.length) return;
-
-            currentQuestion = index;
-            const question = quizData[index];
-
-            // Reset state
-            answered = false;
-            translationField.innerHTML = '';
-            optionsContainer.innerHTML = '';
-            feedback.textContent = '';
-            feedback.className = 'feedback';
-            feedbackContainer.style.display = 'none';
-
-            // Set question text
-            questionText.textContent = question.fr;
-            questionText.classList.add('slide-in');
-
-            // Populate previous answer if exists
-            if (userAnswers[index].length > 0) {
-                userAnswers[index].forEach(word => {
-                    const wordElement = document.createElement('span');
-                    wordElement.className = 'word';
-                    wordElement.textContent = word;
-                    wordElement.addEventListener('click', () => removeWord(word));
-                    translationField.appendChild(wordElement);
-                });
-            }
-
-            // Populate options
-            const shuffledOptions = shuffleArray([...question.options]);
-            shuffledOptions.forEach(option => {
-                if (!userAnswers[index].includes(option)) {
-                    const optionElement = document.createElement('span');
-                    optionElement.className = 'option';
-                    optionElement.textContent = option;
-                    optionElement.addEventListener('click', () => addWord(option));
-                    optionElement.addEventListener('touchstart', () => addWord(option));
-                    optionsContainer.appendChild(optionElement);
-                }
-            });
-
-            // Update navigation buttons
-            backButton.disabled = index === 0;
-            nextButton.disabled = false;
-            nextButton.textContent = index === quizData.length - 1 ? 'VER RESULTADO' : 'AVANÇAR';
-
-            // Update progress bar
-            updateProgressBar();
-        }
-
-        // Shuffle array for options
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -635,10 +571,56 @@
             return array;
         }
 
-        // Add word to translation field
+        function loadQuestion(index) {
+            if (index < 0 || index >= quizData.length) return;
+
+            currentQuestion = index;
+            const question = quizData[index];
+
+            answered = false;
+            translationField.innerHTML = '';
+            optionsContainer.innerHTML = '';
+            feedback.textContent = '';
+            feedback.className = 'feedback';
+            feedbackContainer.style.display = 'none';
+
+            questionText.textContent = question.fr;
+            questionText.classList.add('slide-in');
+
+            userAnswers[currentQuestion] = userAnswers[currentQuestion] || [];
+            userAnswers[currentQuestion].forEach(word => {
+                const wordElement = document.createElement('span');
+                wordElement.className = 'word';
+                wordElement.textContent = word;
+                wordElement.addEventListener('click', () => removeWord(word));
+                wordElement.addEventListener('touchstart', () => removeWord(word));
+                translationField.appendChild(wordElement);
+            });
+
+            const availableOptions = quizData[index].options.filter(
+                option => !userAnswers[index].includes(option)
+            );
+            const shuffledOptions = shuffleArray([...availableOptions]);
+            shuffledOptions.forEach(option => {
+                const optionElement = document.createElement('span');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.addEventListener('click', () => addWord(option));
+                optionElement.addEventListener('touchstart', () => addWord(option));
+                optionsContainer.appendChild(optionElement);
+            });
+
+            backButton.disabled = index === 0;
+            nextButton.disabled = false;
+            nextButton.textContent = index === quizData.length - 1 ? 'VER RESULTADO' : 'AVANÇAR';
+
+            updateProgressBar();
+        }
+
         function addWord(word) {
             if (answered) return;
 
+            userAnswers[currentQuestion] = userAnswers[currentQuestion] || [];
             userAnswers[currentQuestion].push(word);
             translationField.innerHTML = '';
             userAnswers[currentQuestion].forEach(w => {
@@ -651,20 +633,20 @@
             });
 
             optionsContainer.innerHTML = '';
-            const shuffledOptions = shuffleArray([...quizData[currentQuestion].options]);
+            const availableOptions = quizData[currentQuestion].options.filter(
+                option => !userAnswers[currentQuestion].includes(option)
+            );
+            const shuffledOptions = shuffleArray([...availableOptions]);
             shuffledOptions.forEach(option => {
-                if (!userAnswers[currentQuestion].includes(option)) {
-                    const optionElement = document.createElement('span');
-                    optionElement.className = 'option';
-                    optionElement.textContent = option;
-                    optionElement.addEventListener('click', () => addWord(option));
-                    optionElement.addEventListener('touchstart', () => addWord(option));
-                    optionsContainer.appendChild(optionElement);
-                }
+                const optionElement = document.createElement('span');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.addEventListener('click', () => addWord(option));
+                optionElement.addEventListener('touchstart', () => addWord(option));
+                optionsContainer.appendChild(optionElement);
             });
         }
 
-        // Remove word from translation field
         function removeWord(word) {
             if (answered) return;
 
@@ -680,35 +662,38 @@
             });
 
             optionsContainer.innerHTML = '';
-            const shuffledOptions = shuffleArray([...quizData[currentQuestion].options]);
+            const availableOptions = quizData[currentQuestion].options.filter(
+                option => !userAnswers[currentQuestion].includes(option)
+            );
+            const shuffledOptions = shuffleArray([...availableOptions]);
             shuffledOptions.forEach(option => {
-                if (!userAnswers[currentQuestion].includes(option)) {
-                    const optionElement = document.createElement('span');
-                    optionElement.className = 'option';
-                    optionElement.textContent = option;
-                    optionElement.addEventListener('click', () => addWord(option));
-                    optionElement.addEventListener('touchstart', () => addWord(option));
-                    optionsContainer.appendChild(optionElement);
-                }
+                const optionElement = document.createElement('span');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.addEventListener('click', () => addWord(option));
+                optionElement.addEventListener('touchstart', () => addWord(option));
+                optionsContainer.appendChild(optionElement);
             });
         }
 
-        // Check answer
         function checkAnswer() {
             if (answered) return;
 
             buttonSound.play();
             answered = true;
-            const userAnswer = userAnswers[currentQuestion].join(' ').toLowerCase();
-            const correctAnswer = quizData[currentQuestion].pt.toLowerCase();
+            const userAnswer = normalizeString(userAnswers[currentQuestion].join(' '));
+            const correctAnswer = normalizeString(quizData[currentQuestion].pt);
             const isCorrect = userAnswer === correctAnswer;
 
-            // Show feedback
             feedbackContainer.style.display = 'block';
             correctAnswer.textContent = `Resposta correta: ${quizData[currentQuestion].pt}`;
             translationField.childNodes.forEach((node, index) => {
                 const correctWords = quizData[currentQuestion].pt.split(' ');
-                node.classList.add(correctWords[index] && node.textContent.toLowerCase() === correctWords[index].toLowerCase() ? 'correct' : 'incorrect');
+                node.classList.add(
+                    correctWords[index] && normalizeString(node.textContent) === normalizeString(correctWords[index])
+                        ? 'correct'
+                        : 'incorrect'
+                );
             });
 
             feedback.textContent = isCorrect ? 'CORRETO' : 'INCORRETO';
@@ -723,13 +708,11 @@
             updateProgressBar();
         }
 
-        // Update progress bar
         function updateProgressBar() {
             const progress = ((currentQuestion + 1) / quizData.length) * 100;
             progressBar.style.width = `${progress}%`;
         }
 
-        // Navigation functions
         function goToNextQuestion() {
             buttonSound.play();
 
@@ -757,7 +740,6 @@
             }
         }
 
-        // Show results
         function showResults() {
             const percentage = Math.round((score / quizData.length) * 100);
 
@@ -787,7 +769,6 @@
             resultsPage.style.display = 'block';
         }
 
-        // Event listeners
         introVideo.addEventListener('ended', () => {
             introVideo.style.opacity = '0';
             setTimeout(() => {
@@ -808,7 +789,6 @@
         nextButton.addEventListener('click', goToNextQuestion);
         checkButton.addEventListener('click', checkAnswer);
 
-        // Swipe gestures for navigation
         let touchStartX = 0;
         let touchEndX = 0;
 
@@ -825,7 +805,6 @@
             }
         });
 
-        // Load progress from localStorage
         document.addEventListener('DOMContentLoaded', () => {
             introVideo.play();
             introAudio.play();
@@ -840,7 +819,6 @@
             loadQuestion(currentQuestion);
         });
 
-        // Save progress to localStorage
         window.addEventListener('beforeunload', () => {
             const progress = {
                 currentQuestion,
