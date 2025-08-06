@@ -551,10 +551,7 @@
             return str
                 .toLowerCase()
                 .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .replace(/é\/está/g, '(é|está)')
-                .replace(/é\/está grande/g, '(é grande|está grande)')
-                .replace(/é\/está pequena/g, '(é pequena|está pequena)');
+                .replace(/[\u0300-\u036f]/g, '');
         }
 
         function initQuiz() {
@@ -590,7 +587,6 @@
             questionText.textContent = question.fr;
             questionText.classList.add('slide-in');
 
-            // Only load saved answers if the question was previously answered
             if (userAnswers[index].length > 0 && userAnswers[index][0] !== '') {
                 userAnswers[index].forEach(word => {
                     const wordElement = document.createElement('span');
@@ -601,7 +597,7 @@
                     translationField.appendChild(wordElement);
                 });
             } else {
-                userAnswers[index] = []; // Reset answers for new question
+                userAnswers[index] = [];
             }
 
             const availableOptions = quizData[index].options.filter(
@@ -688,17 +684,34 @@
 
             buttonSound.play();
             answered = true;
-            const userAnswer = userAnswers[currentQuestion].join(' ').toLowerCase();
-            const correctAnswer = quizData[currentQuestion].pt.toLowerCase();
-            const correctAnswerAlternatives = correctAnswer.split('/').map(alt => alt.trim());
-            const isCorrect = correctAnswerAlternatives.some(alt => normalizeString(userAnswer) === normalizeString(alt));
+
+            const userAnswerWords = userAnswers[currentQuestion] || [];
+            const correctAnswer = quizData[currentQuestion].pt;
+            const correctAnswerWords = correctAnswer.split(' ').map(word => word.split('/')[0]);
+
+            let isCorrect = true;
+            if (userAnswerWords.length !== correctAnswerWords.length) {
+                isCorrect = false;
+            } else {
+                for (let i = 0; i < userAnswerWords.length; i++) {
+                    const userWord = normalizeString(userAnswerWords[i]);
+                    const correctWord = normalizeString(correctAnswerWords[i]);
+                    const correctAlternatives = quizData[currentQuestion].pt.split(' ')[i].split('/');
+                    const isWordCorrect = correctAlternatives.some(alt => normalizeString(alt) === userWord);
+                    if (!isWordCorrect) {
+                        isCorrect = false;
+                        break;
+                    }
+                }
+            }
 
             feedbackContainer.style.display = 'block';
             correctAnswer.textContent = `Resposta correta: ${quizData[currentQuestion].pt}`;
             translationField.childNodes.forEach((node, index) => {
                 const correctWords = quizData[currentQuestion].pt.split(' ');
-                const wordIsCorrect = correctWords[index] && normalizeString(node.textContent) === normalizeString(correctWords[index].split('/')[0]);
-                node.classList.add(wordIsCorrect ? 'correct' : 'incorrect');
+                const correctAlternatives = correctWords[index] ? correctWords[index].split('/') : [];
+                const isWordCorrect = correctAlternatives.some(alt => normalizeString(node.textContent) === normalizeString(alt));
+                node.classList.add(isWordCorrect ? 'correct' : 'incorrect');
             });
 
             feedback.textContent = isCorrect ? 'CORRETO' : 'INCORRETO';
