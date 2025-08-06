@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Tradução em Francês</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+        }
+        #intro-page {
+            height: 100vh;
+            background: url('fundo.jpg') no-repeat center center/cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #intro-video {
+            width: 50%;
+            max-width: 600px;
+        }
+        #quiz-start-page {
+            height: 100vh;
+            background: #F1E1AC;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        #quiz-start-page img {
+            width: 30%;
+            max-width: 300px;
+            margin-bottom: 20px;
+        }
+        #start-button {
+            background: #002F6C;
+            color: white;
+            font-family: 'Franklin Gothic Demi', sans-serif;
+            font-size: 1.5rem;
+            padding: 15px 30px;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        #start-button:hover {
+            background: #3B8C59;
+        }
+        #quiz-page {
+            height: 100vh;
+            background: #F4F1EC;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        #quiz-container {
+            background: #002F6C;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        #mascot {
+            width: 100px;
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+        }
+        #logo {
+            width: 150px;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        #question-header {
+            background: #C8102E;
+            border-radius: 25px;
+            padding: 10px;
+            text-align: center;
+            color: white;
+            font-family: 'Rockwell', serif;
+            margin-bottom: 20px;
+        }
+        #question-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        #answer-box {
+            background: #F4F1EC;
+            border-radius: 25px;
+            padding: 10px;
+            min-height: 50px;
+            margin: 20px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .answer-word {
+            background: #C6B9DD;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .answer-word:hover {
+            background: #10C894;
+        }
+        #options-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        .option {
+            background: #F5C84C;
+            padding: 10px 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: background 0.3s;
+        }
+        .option:hover {
+            background: #10C894;
+        }
+        #verify-button {
+            background: #3B8C59;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            padding: 10px 20px;
+            border-radius: 15px;
+            border: none;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto;
+            transition: background 0.3s;
+        }
+        #verify-button:hover {
+            background: #2E6C00;
+        }
+        #feedback {
+            font-family: 'Cooper Black', serif;
+            text-align: center;
+            font-size: 1.5rem;
+            margin: 10px 0;
+        }
+        #correct-answer {
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            color: #F4F1EC;
+        }
+        #navigation {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        #back-button, #next-button {
+            padding: 10px 20px;
+            border-radius: 15px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: background 0.3s;
+        }
+        #back-button {
+            background: #F5C84C;
+        }
+        #back-button:hover {
+            background: #C6B9DD;
+        }
+        #next-button {
+            background: #3B8C59;
+            color: white;
+        }
+        #next-button:hover {
+            background: #2E6C00;
+        }
+        #progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #C6B9DD;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        #progress {
+            height: 100%;
+            background: #10C894;
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+        #result-page {
+            height: 100vh;
+            background: #F4F1EC;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        #result-container {
+            background: #002F6C;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            padding: 20px;
+            color: white;
+        }
+        #result-message {
+            background: #C8102E;
+            border-radius: 15px;
+            padding: 10px;
+            font-family: 'Franklin Gothic Demi', sans-serif;
+            font-size: 2rem;
+        }
+        #result-text {
+            font-family: 'Poppins', sans-serif;
+            margin: 20px 0;
+        }
+        #result-image {
+            width: 50%;
+            max-width: 300px;
+        }
+        @media (max-width: 600px) {
+            #quiz-container {
+                width: 95%;
+            }
+            #intro-video {
+                width: 80%;
+            }
+            #question-text {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="intro-page">
+        <video id="intro-video" autoplay>
+            <source src="VIDEOINTRO.mp4" type="video/mp4">
+        </video>
+    </div>
+    <div id="quiz-start-page" style="display: none;">
+        <img src="MASCOTENEUTRO.png" alt="Mascote Neutro">
+        <button id="start-button">INICIAR EXERCÍCIO</button>
+    </div>
+    <div id="quiz-page" style="display: none;">
+        <img id="logo" src="LOGODAMIAO.png" alt="Logo">
+        <div id="quiz-container">
+            <img id="mascot" src="MASCOTENINHO.png" alt="Mascote">
+            <div id="question-header">
+                Escolha as palavras que melhor traduzem a seguinte frase:
+                <div id="question-text"></div>
+            </div>
+            <div id="answer-box"></div>
+            <div id="options-container"></div>
+            <button id="verify-button">Verificar</button>
+            <div id="feedback"></div>
+            <div id="correct-answer"></div>
+            <div id="navigation">
+                <button id="back-button">VOLTAR</button>
+                <button id="next-button">AVANÇAR</button>
+            </div>
+            <div id="progress-bar">
+                <div id="progress"></div>
+            </div>
+        </div>
+    </div>
+    <div id="result-page" style="display: none;">
+        <div id="result-container">
+            <div id="result-message"></div>
+            <div id="result-text"></div>
+            <img id="result-image" src="" alt="Mascote Resultado">
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { fr: "L’ami est jeune.", pt: "O amigo é jovem.", options: ["O amigo", "é", "jovem", "rápido", "azul"] },
+            { fr: "La table est petite.", pt: "A mesa é pequena.", options: ["A mesa", "é", "pequena", "grande", "azul"] },
+            { fr: "Le cahier est bleu.", pt: "O caderno é azul.", options: ["O caderno", "é", "azul", "jovem", "rápido"] },
+            { fr: "La tâche est simple.", pt: "A tarefa é/está simples.", options: ["A tarefa", "é/está", "simples", "difícil", "A taxa"] },
+            { fr: "Il dessine un livre.", pt: "Ele desenha um livro.", options: ["Ele", "desenha", "um livro", "está livre", "jovem"] },
+            { fr: "L’école est petite.", pt: "A escola é pequena.", options: ["A escola", "é", "pequena", "grande", "azul"] },
+            { fr: "L’étudiant parle vite.", pt: "O estudante fala rápido.", options: ["O estudante", "fala", "rápido", "lento", "parece"] },
+            { fr: "Je mange le pain.", pt: "Eu como o pão.", options: ["Eu", "como", "o pão", "livro", "casa"] },
+            { fr: "La fille prépare le lait.", pt: "A menina prepara o leite.", options: ["A menina", "prepara", "o leite", "pão", "rápido"] },
+            { fr: "C’est le même jour.", pt: "É o mesmo dia.", options: ["É", "o mesmo", "dia", "noite", "livro"] },
+            { fr: "La maison est pleine.", pt: "A casa está cheia.", options: ["A casa", "está", "cheia", "vazia", "na praia"] },
+            { fr: "Il mange vite.", pt: "Ele come rápido.", options: ["Ele", "come", "rápido", "lento", "azul"] },
+            { fr: "Le stylo est bleu.", pt: "A caneta é azul.", options: ["A caneta", "é", "azul", "vermelha", "jovem"] },
+            { fr: "Le crayon tombe.", pt: "O lápis cai.", options: ["O lápis", "cai", "sobe", "azul", "rápido"] },
+            { fr: "La porte est simple.", pt: "A porta é simples.", options: ["A porta", "é", "simples", "complexa", "pequena"] },
+            { fr: "L’horloge est mauvaise.", pt: "O relógio é/está ruim.", options: ["O relógio", "é/está", "ruim", "bom", "rápido"] },
+            { fr: "Ma mère mange tôt.", pt: "Minha mãe come cedo.", options: ["Minha mãe", "come", "cedo", "tarde", "rápido"] },
+            { fr: "Le jeu est drôle.", pt: "O jogo é divertido.", options: ["O jogo", "é", "divertido", "chato", "azul"] },
+            { fr: "Le manteau est bleu.", pt: "O casaco é azul.", options: ["O casaco", "é", "azul", "vermelho", "pequeno"] },
+            { fr: "Le bus est rapide.", pt: "O ônibus é rápido.", options: ["O ônibus", "é", "rápido", "lento", "azul"] },
+            { fr: "Je joue avec le garçon.", pt: "Eu brinco com o menino.", options: ["Eu", "brinco", "com o menino", "sozinho", "rápido"] },
+            { fr: "Mon intérêt est un autre livre.", pt: "Meu interesse é um outro livro.", options: ["Meu interesse", "é", "um outro livro", "casa", "rápido"] },
+            { fr: "Le danger est grand.", pt: "O perigo é grande.", options: ["O perigo", "é", "grande", "pequeno", "azul"] },
+            { fr: "Le pantalon est petit.", pt: "A calça é/está pequena.", options: ["A calça", "é/está", "pequena", "grande", "rápida"] },
+            { fr: "Le champ est simple.", pt: "O campo é simples.", options: ["O campo", "é", "simples", "complexo", "pequeno"] },
+            { fr: "La chambre est commune.", pt: "O quarto é comum.", options: ["O quarto", "é", "comum", "especial", "azul"] },
+            { fr: "L’enfant joue.", pt: "A criança brinca.", options: ["A criança", "brinca", "dorme", "rápido", "azul"] },
+            { fr: "Vendre un sac.", pt: "Vender uma mochila.", options: ["Vender", "uma mochila", "comprar", "casa", "rápido"] },
+            { fr: "Le travail est humble.", pt: "O trabalho é humilde.", options: ["O trabalho", "é", "humilde", "orgulhoso", "rápido"] },
+            { fr: "Le soleil est grand.", pt: "O sol é grande.", options: ["O sol", "é", "grande", "pequeno", "azul"] },
+            { fr: "La fille est jeune.", pt: "A menina é/está jovem.", options: ["A menina", "é/está", "jovem", "velha", "rápida"] },
+            { fr: "La famille est importante.", pt: "A família é importante.", options: ["A família", "é", "importante", "insignificante", "rápida"] },
+            { fr: "La réponse est vite.", pt: "A resposta é rápida.", options: ["A resposta", "é", "rápida", "lenta", "azul"] },
+            { fr: "Le garçon mange le pain.", pt: "O menino come o pão.", options: ["O menino", "come", "o pão", "livro", "rápido"] },
+            { fr: "Le nom est important.", pt: "O nome é importante.", options: ["O nome", "é", "importante", "insignificante", "azul"] },
+            { fr: "La peinture est une réponse.", pt: "A pintura é uma resposta.", options: ["A pintura", "é", "uma resposta", "pergunta", "rápida"] },
+            { fr: "Dessiner une montagne.", pt: "Desenhar uma montanha.", options: ["Desenhar", "uma montanha", "casa", "rápido", "azul"] },
+            { fr: "Ma maison est le monde.", pt: "Minha casa é o mundo.", options: ["Minha casa", "é", "o mundo", "pequena", "rápida"] },
+            { fr: "La voiture tombe de la montagne.", pt: "O carro cai da montanha.", options: ["O carro", "cai", "da montanha", "sobe", "rápido"] },
+            { fr: "La main du garçon est bleue.", pt: "A mão do menino está azul.", options: ["A mão", "do menino", "está azul", "vermelha", "rápida"] },
+            { fr: "La faim de mon père est grande.", pt: "A fome do meu pai é/está grande.", options: ["A fome", "do meu pai", "é/está grande", "é/está pequena", "A fé"] },
+            { fr: "L’emploi de mon père est pompier.", pt: "O emprego/serviço do meu pai é bombeiro.", options: ["O emprego/serviço", "do meu pai", "é bombeiro", "médico", "rápido"] },
+            { fr: "Le jardin de la fille est simple.", pt: "O jardim da menina é simples.", options: ["O jardim", "da menina", "é simples", "de fita", "rápido"] }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedWords = [];
+        let progress = JSON.parse(localStorage.getItem('quizProgress')) || { currentQuestion: 0, score: 0 };
+
+        const introPage = document.getElementById('intro-page');
+        const quizStartPage = document.getElementById('quiz-start-page');
+        const quizPage = document.getElementById('quiz-page');
+        const resultPage = document.getElementById('result-page');
+        const questionText = document.getElementById('question-text');
+        const answerBox = document.getElementById('answer-box');
+        const optionsContainer = document.getElementById('options-container');
+        const verifyButton = document.getElementById('verify-button');
+        const feedback = document.getElementById('feedback');
+        const correctAnswer = document.getElementById('correct-answer');
+        const backButton = document.getElementById('back-button');
+        const nextButton = document.getElementById('next-button');
+        const progressBar = document.getElementById('progress');
+        const introVideo = document.getElementById('intro-video');
+        const startButton = document.getElementById('start-button');
+        const resultMessage = document.getElementById('result-message');
+        const resultText = document.getElementById('result-text');
+        const resultImage = document.getElementById('result-image');
+
+        const introAudio = new Audio('SOMINTRO.mp3');
+        introAudio.play();
+
+        introVideo.onended = () => {
+            introAudio.pause();
+            introPage.style.display = 'none';
+            quizStartPage.style.display = 'flex';
+        };
+
+        startButton.addEventListener('click', () => {
+            quizStartPage.style.display = 'none';
+            quizPage.style.display = 'flex';
+            loadQuestion();
+        });
+
+        function loadQuestion() {
+            const q = questions[currentQuestion];
+            questionText.textContent = q.fr;
+            answerBox.innerHTML = '';
+            optionsContainer.innerHTML = '';
+            feedback.textContent = '';
+            correctAnswer.textContent = '';
+            selectedWords = [];
+
+            q.options.forEach(option => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.addEventListener('click', () => selectWord(option, optionElement));
+                optionElement.addEventListener('touchstart', () => selectWord(option, optionElement));
+                optionsContainer.appendChild(optionElement);
+            });
+
+            updateProgress();
+        }
+
+        function selectWord(word, element) {
+            selectedWords.push(word);
+            const wordElement = document.createElement('div');
+            wordElement.className = 'answer-word';
+            wordElement.textContent = word;
+            wordElement.addEventListener('click', () => removeWord(word, wordElement));
+            wordElement.addEventListener('touchstart', () => removeWord(word, wordElement));
+            answerBox.appendChild(wordElement);
+            element.style.display = 'none';
+        }
+
+        function removeWord(word, element) {
+            selectedWords = selectedWords.filter(w => w !== word);
+            answerBox.removeChild(element);
+            const optionElement = Array.from(optionsContainer.children).find(opt => opt.textContent === word);
+            if (optionElement) optionElement.style.display = 'block';
+        }
+
+        verifyButton.addEventListener('click', () => {
+            const buttonAudio = new Audio('BUTTON.mp3');
+            buttonAudio.play();
+            const q = questions[currentQuestion];
+            const userAnswer = selectedWords.join(' ');
+            const isCorrect = userAnswer === q.pt;
+
+            answerBox.style.background = isCorrect ? '#3B8C59' : '#C8102E';
+            feedback.textContent = isCorrect ? 'CORRETO' : 'INCORRETO';
+            correctAnswer.textContent = isCorrect ? '' : `Resposta correta: ${q.pt}`;
+            const feedbackAudio = new Audio(isCorrect ? 'WIN.wav' : 'ERROR.wav');
+            feedbackAudio.play();
+
+            if (isCorrect) score++;
+            localStorage.setItem('quizProgress', JSON.stringify({ currentQuestion, score }));
+        });
+
+        backButton.addEventListener('click', () => {
+            const buttonAudio = new Audio('BUTTON.mp3');
+            buttonAudio.play();
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            const buttonAudio = new Audio('BUTTON.mp3');
+            buttonAudio.play();
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        });
+
+        function updateProgress() {
+            const percentage = ((currentQuestion + 1) / questions.length) * 100;
+            progressBar.style.width = `${percentage}%`;
+        }
+
+        function showResults() {
+            quizPage.style.display = 'none';
+            resultPage.style.display = 'flex';
+            const percentage = (score / questions.length) * 100;
+
+            let message, text, image, audio;
+            if (percentage >= 95) {
+                message = 'EXCELENTE';
+                text = `Parabéns pelo seu desempenho excepcional! Você alcançou um resultado EXCELENTE, acertando ${score} das palavras no quiz de escrita em francês! Isso demonstra um domínio impressionante das expressões e da ortografia francesa. Continue assim, pois seu esforço e dedicação são inspiradores! Este resultado reflete não apenas sua habilidade linguística, mas também sua atenção aos detalhes e compromisso em aprender. Que tal continuar explorando o idioma com o mesmo entusiasmo? A prática constante vai te levar ainda mais longe.`;
+                image = 'MASCOTEFELIZ.png';
+                audio = 'POSITIVO.mp3';
+            } else if (percentage >= 75) {
+                message = 'PARABÉNS';
+                text = `Parabéns pelo seu desempenho! Você obteve um BOM resultado, acertando ${score} das palavras no quiz de escrita em francês! Isso mostra que você está no caminho certo, com uma sólida compreensão do idioma. Sua dedicação está valendo a pena, e cada palavra certa é um passo rumo à fluência. Continue assim, brilhando no aprendizado do francês!`;
+                image = 'MASCOTEALEGRE.png';
+                audio = 'POSITIVO.mp3';
+            } else if (percentage >= 60) {
+                message = 'QUASE LÁ';
+                text = `Você alcançou o nível SUFICIENTE, acertando ${score} das palavras no quiz de escrita em francês! Isso indica um progresso notável, com uma boa base no idioma. Sua dedicação está clara, e você está muito próximo de resultados ainda melhores. Cada palavra escrita é um avanço no aprendizado do francês. Continue se empenhando, e logo verá seu desempenho crescer! Siga firme na jornada para dominar o idioma!`;
+                image = 'MASCOTEDUVIDA.png';
+                audio = 'NEGATIVO.mp3';
+            } else {
+                message = 'NÃO FOI DESSA VEZ';
+                text = `Você obteve o nível INSUFICIENTE, acertando ${score} das palavras no quiz de escrita em francês. Não desanime! Cada tentativa é uma oportunidade de aprendizado, e você já deu o primeiro passo ao participar. O francês pode ser desafiador, mas com prática, você vai melhorar. Reforce as palavras e continue se dedicando. Sua persistência vai te levar mais longe na jornada do idioma!`;
+                image = 'MASCOTEDUVIDA.png';
+                audio = 'NEGATIVO.mp3';
+            }
+
+            resultMessage.textContent = message;
+            resultText.textContent = text;
+            resultImage.src = image;
+            const resultAudio = new Audio(audio);
+            resultAudio.play();
+
+            localStorage.removeItem('quizProgress');
+        }
+
+        // Touch gestures for mobile
+        let touchStartX = 0;
+        quizPage.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        quizPage.addEventListener('touchend', e => {
+            const touchEndX = e.changedTouches[0].screenX;
+            if (touchEndX < touchStartX - 50 && currentQuestion < questions.length - 1) {
+                nextButton.click();
+            } else if (touchEndX > touchStartX + 50 && currentQuestion > 0) {
+                backButton.click();
+            }
+        });
+
+        // Load saved progress
+        if (progress.currentQuestion > 0) {
+            currentQuestion = progress.currentQuestion;
+            score = progress.score;
+            quizStartPage.style.display = 'none';
+            quizPage.style.display = 'flex';
+            loadQuestion();
+        }
+    </script>
+</body>
+</html>
